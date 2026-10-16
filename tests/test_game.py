@@ -43,6 +43,22 @@ class MovementAndLookingTests(unittest.TestCase):
         self.assertIn("no hint for this spot", run(self.game, "hint"))
         self.assertEqual(self.game.moves, 0)
 
+    def test_here_text_only_until_picked_up(self):
+        self.assertIn("glints in the grass", run(self.game, "look"))
+        run(self.game, "take key", "drop key")
+        text = run(self.game, "look")
+        self.assertIn("There is a brass key here.", text)
+        self.assertNotIn("glints in the grass", text)
+        # and the game remembers it across a save
+        loaded, _ = Game.from_save(self.game.world, self.game.to_save("x"))
+        self.assertIn("There is a brass key here.", loaded.look().text)
+
+    def test_dropped_text(self):
+        game = game_from(BASIC.replace("points = 10\n",
+                                       "points = 10\ndropped = Your key lies here.\n", 1))
+        run(game, "take key", "drop key")
+        self.assertIn("Your key lies here.", run(game, "look"))
+
     def test_unknown_word_does_not_count(self):
         self.assertIn("don't know the word", run(self.game, "xyzzy"))
         self.assertEqual(self.game.moves, 0)

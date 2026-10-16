@@ -67,6 +67,14 @@ class AgnesTests(unittest.TestCase):
         run(g, "up")
         self.assertIn("to the south", run(g, "hint"))
 
+    def test_dropped_ring_isnt_under_water(self):
+        g = self.game
+        run(g, "take pie", "e", "give pie to agnes", "n", "tie rope to well",
+            "climb down", "take ring", "up", "drop ring")
+        text = run(g, "look")
+        self.assertIn("There is a gold ring here.", text)
+        self.assertNotIn("beneath the water", text)
+
     def test_alternate_phrasings(self):
         g = self.game
         run(g, "pick up the apple pie", "e")

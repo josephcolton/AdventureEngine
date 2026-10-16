@@ -262,11 +262,22 @@ points = 5
 | `name` | What the game calls it, as in "You are carrying: coil of rope". |
 | `aliases` | Other words the player might use for it, separated by commas. The name and the short name always work, so you don't need to repeat them. |
 | `location` | Where it starts: a room's short name, `inventory` (the player starts out carrying it), or `nowhere` (it isn't in the game yet; see [Making Things Appear and Disappear](#making-things-appear-and-disappear)). |
-| `here` | The sentence shown in the room description while it's lying there. |
+| `here` | The sentence shown in the room description while it's lying where it started. |
+| `dropped` | The sentence shown once the player has picked it up and put it down somewhere. You can leave this out. |
 | `examine` | What the player sees when they type `examine rope` or `look at rope`. |
 | `points` | Points the player gets the first time they have it. You can leave this out. |
 
 The game already knows how to `take`, `drop` and `examine` things, and how to list what the player is carrying (`inventory`). You don't have to write any of that.
+
+### Where it started, and where it's dropped
+
+The `here` sentence is only used **until the player first picks the item up**. That way you can say exactly where it is ("lies in the mud", "hangs on a nail") without worrying about where the player might drop it later.
+
+After that, a dropped item is shown simply as `There is a coil of rope here.` If you'd like your own words, add a `dropped` line that makes sense in any room:
+
+```ini
+dropped = A coil of rope lies here in a tangle.
+```
 
 ### Aliases with more than one word
 
@@ -942,6 +953,7 @@ A special command counts as a way back, so a rope you climb down with `go = well
 | `take_fail` | `take_fail = It's too heavy.` |
 | `points` | `points = 5` |
 | `light` | `light = yes` |
+| `dropped` | `dropped = A coil of rope lies here.` |
 | `here when` | `here when flag tied = The rope is tied to the post.` |
 | `examine when` | `examine when flag wet = The rope is soaking wet.` |
 

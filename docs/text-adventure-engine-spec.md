@@ -119,6 +119,7 @@ Shown when the program opens and when the player chooses **Change Adventure**.
   "current_room": "riverbank",
   "visited_rooms": ["riverbank", "forest_path"],
   "item_locations": {"rope": "inventory", "lantern": "cellar"},
+  "handled_items": ["rope"],
   "flags": ["rope_tied"],
   "score": 15,
   "awarded": ["room:riverbank", "item:rope", "action:enter_river"],
@@ -145,7 +146,7 @@ INI-like, but parsed by our own code (do **not** use `configparser`; it can't ha
 - **Long text:** any line that starts with a space or tab continues the previous value. Continuation lines are joined with single spaces (the window does the word-wrapping, so the author can break lines wherever she likes).
 - **Paragraph break inside text:** either a continuation line containing only `~`, **or** one or more blank lines followed by another indented line. (Authors naturally press Enter twice for a new paragraph; that must just work.)
 - **Blank lines** are otherwise ignored. A blank line does not by itself end a text value; the next *unindented* line does.
-- **Comments:** lines whose first non-space character is `#` are ignored. A section header may also be followed by "  # ..." (`[game]   # exactly one`). On a **non-text** setting, a `#` preceded by at least two spaces starts a trailing comment (`max_score = 100   # optional`). On **text** settings a `#` is always shown as written. Text settings are: `title`, `author`, `description`, `intro`, `name`, `first`, `again`, `here`, `examine`, `take_fail`, `dark_text`, `message`, `fail`, `done`, `text`, `hint`, and the text part of any `when` line (5.3, 5.4).
+- **Comments:** lines whose first non-space character is `#` are ignored. A section header may also be followed by "  # ..." (`[game]   # exactly one`). On a **non-text** setting, a `#` preceded by at least two spaces starts a trailing comment (`max_score = 100   # optional`). On **text** settings a `#` is always shown as written. Text settings are: `title`, `author`, `description`, `intro`, `name`, `first`, `again`, `here`, `examine`, `take_fail`, `dark_text`, `message`, `fail`, `done`, `text`, `hint`, `dropped`, and the text part of any `when` line (5.3, 5.4).
 - **Quotation marks** in text are ordinary characters (for dialogue) and are shown as written.
 - Section types, IDs and keys are **case-insensitive**. IDs may contain letters, numbers and underscores; spaces in IDs are converted to underscores.
 - Lists are comma-separated: `aliases = rope, coil, coil of rope`.
@@ -216,6 +217,7 @@ name = coiled rope
 aliases = rope, coil, coiled rope
 location = riverbank        # a room id, "inventory", or "nowhere"
 here = A coiled rope lies in the mud.
+dropped = A coiled rope lies here.   # optional; see "Where it started" below
 examine = Twenty feet of sturdy hemp, still damp.
 take = yes                  # default yes; "no" for scenery/furniture
 # take_fail is the message shown when take = no
@@ -230,6 +232,7 @@ examine when flag rope_wet = The rope is soaked and heavy now.
 - **Aliases:** the item's `name` and its id (with underscores turned into spaces) are always aliases automatically, in addition to any listed in `aliases`. Multi-word aliases are allowed. The parser matches the **longest** alias first.
 - **Shared aliases are allowed.** Two items may both answer to "rope" (for example a coil of rope you carry and a rope tied to a well). See 6.1 step 5 for how the parser chooses.
 - **Points** are awarded the first time the item enters the inventory by any means (`take` or an action's `move ... to inventory`).
+- **Where it started:** `here` (and `here when`) describe the item where the author placed it, so they're only used until the item first enters the inventory (by `take` or an action's `move ... to inventory`). After that, the item is shown wherever it lies with its `dropped` text, or by default `There is a/an <name> here.` (`<name> is here.` when the name is capitalized). Items that start in the inventory count as already picked up. The set of picked-up items is kept in save files as `handled_items`; older saves without it treat only carried items as picked up.
 - **Changing text:** `here` and `examine` may have conditional variants written `here when <conditions> = text` and `examine when <conditions> = text` (same `when` reading rules as 5.3). The first variant, in file order, whose conditions are true is used; otherwise the plain `here` / `examine` is used. Use this for characters whose appearance changes as the story moves along.
 
 ### 5.5 `[vocabulary]` — optional

@@ -22,6 +22,7 @@ SECTIONS_WITH_ID = ("room", "item", "action", "ending")
 TEXT_KEYS = {
     "title", "author", "description", "intro", "name", "first", "again", "here",
     "examine", "take_fail", "dark_text", "message", "fail", "done", "text", "hint",
+    "dropped",
 }
 
 # Keys written as "<key> when <conditions> = <text>".

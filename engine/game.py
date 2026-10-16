@@ -53,6 +53,9 @@ class Game:
         self.current_room = w.game.start
         self.visited: list[str] = []
         self.item_locations = {i.id: i.location for i in w.items.values()}
+        # Items the player has held. Their 'here' text described where they
+        # started, so once moved they're described as just lying there.
+        self.handled = {i for i, place in self.item_locations.items() if place == "inventory"}
         self.flags: set[str] = set()
         self.score = 0
         self.awarded: set[str] = set()
@@ -254,9 +257,10 @@ class Game:
         result.say(action.message)
         for item_id, place in action.moves:
             destination = self.current_room if place == "here" else place
-            self.item_locations[item_id] = destination
             if destination == "inventory":
-                self._award(f"item:{item_id}", self.world.items[item_id].points)
+                self._pick_up(item_id)
+            else:
+                self.item_locations[item_id] = destination
         self.flags.update(action.set_flags)
         self.flags.difference_update(action.clear_flags)
         self._award(f"action:{action.id}", action.score)
@@ -319,6 +323,22 @@ class Game:
         return [i for i in self.world.items.values()
                 if self.item_locations[i.id] == "inventory"]
 
+    def _pick_up(self, item_id: str) -> None:
+        self.item_locations[item_id] = "inventory"
+        self.handled.add(item_id)
+        self._award(f"item:{item_id}", self.world.items[item_id].points)
+
+    def here_text(self, item: Item) -> str:
+        """The sentence for an item lying in the room."""
+        if item.id in self.handled:
+            if item.dropped:
+                return item.dropped
+            if item.name[:1].isupper():
+                return f"{item.name} is here."
+            article = "an" if item.name[:1].lower() in "aeiou" else "a"
+            return f"There is {article} {item.name} here."
+        return self._pick(item.here_variants, item.here)
+
     def _award(self, key: str, points: int) -> None:
         if points and key not in self.awarded:
             self.awarded.add(key)
@@ -354,7 +374,7 @@ class Game:
         result.say(text)
         for item in self.world.items.values():
             if self.item_locations[item.id] == room.id:
-                result.say(self._pick(item.here_variants, item.here))
+                result.say(self.here_text(item))
 
     def _walk(self, direction: str, result: TurnResult) -> None:
         exit_ = self.room.exits.get(direction)
@@ -460,8 +480,7 @@ class Game:
             elif not item.takeable:
                 result.say(item.take_fail or "You can't take that.")
             else:
-                self.item_locations[item_id] = "inventory"
-                self._award(f"item:{item_id}", item.points)
+                self._pick_up(item_id)
                 result.say("Taken.")
         return True
 
@@ -474,8 +493,7 @@ class Game:
         if not found:
             result.say("There's nothing here to take.")
         for item in found:
-            self.item_locations[item.id] = "inventory"
-            self._award(f"item:{item.id}", item.points)
+            self._pick_up(item.id)
             result.say(f"{item.name}: Taken.")
         return True
 
@@ -547,6 +565,7 @@ class Game:
             "room_name": self.room.name,
             "visited_rooms": list(self.visited),
             "item_locations": dict(self.item_locations),
+            "handled_items": sorted(self.handled),
             "flags": sorted(self.flags),
             "score": self.score,
             "awarded": sorted(self.awarded),
@@ -572,6 +591,11 @@ class Game:
         for item_id, place in data.get("item_locations", {}).items():
             if item_id in items and (place in rooms or place in ("inventory", "nowhere")):
                 game.item_locations[item_id] = place
+        if "handled_items" in data:
+            game.handled = {i for i in data["handled_items"] if i in items}
+        else:   # older saves: at least what's being carried has been handled
+            game.handled = {i for i, place in game.item_locations.items()
+                            if place == "inventory"}
         game.flags = set(data.get("flags", []))
         game.score = int(data.get("score", 0))
         game.awarded = set(data.get("awarded", []))

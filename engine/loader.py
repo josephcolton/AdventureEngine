@@ -25,7 +25,7 @@ ALLOWED_KEYS = {
     "room": {"name", "first", "again", "exits", "points", "score", "dark",
              "dark_text", "when", "hint", "hint when"},
     "item": {"name", "aliases", "location", "here", "examine", "take", "take_fail",
-             "points", "score", "light", "here when", "examine when"},
+             "points", "score", "light", "here when", "examine when", "dropped"},
     "action": {"id", "also", "where", "if", "fail", "message", "go", "score",
                "points", "set", "clear", "move", "end", "once", "done"},
     "ending": {"type", "when", "text"},
@@ -268,6 +268,7 @@ class _Builder:
         item = Item(
             id=ident, name=name, aliases=aliases, location=location,
             here=s.value("here"), here_variants=self._variants(s, "here when"),
+            dropped=s.value("dropped"),
             examine=s.value("examine"), examine_variants=self._variants(s, "examine when"),
             takeable=self._bool(s, "take", True), take_fail=s.value("take_fail"),
             points=self._int(s, "points", "score"), light=self._bool(s, "light", False),

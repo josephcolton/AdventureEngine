@@ -204,7 +204,10 @@ when flag rope_tied = The rope hangs down the bank, back up to the willow.
 #  location = a room id, "inventory" (the player starts with it),
 #             or "nowhere" (it isn't in the game yet; an action can
 #             bring it in later).
-#  here     = the sentence shown in the room description
+#  here     = the sentence shown in the room description, until the
+#             player first picks it up. After that, a dropped item
+#             is shown as "There is a garden trowel here." -- or
+#             write your own with "dropped" (see the lit lamp).
 #  examine  = what the player sees when they look at it
 #  points   = awarded the first time it reaches the player's hands
 # --------------------------------------------------------------
@@ -225,6 +228,8 @@ name = lit oil lamp
 aliases = lamp, lantern, oil lamp, lit lamp
 location = nowhere
 here = A lit oil lamp sits here, glowing warmly.
+# "dropped" is the sentence for an item the player has put down.
+dropped = A lit oil lamp sits here, glowing warmly.
 examine = The little flame burns steady and bright.
 light = yes
 
@@ -233,6 +238,7 @@ name = box of matches
 aliases = matches, match, box of matches, matchbox
 location = nowhere
 here = A box of matches lies here.
+dropped = A box of matches lies here.
 # Conditions can be combined with commas; all must be true.
 here when in kitchen, flag drawer_open = A box of matches sits in the
     open drawer.

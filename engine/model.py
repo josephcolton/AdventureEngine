@@ -48,6 +48,7 @@ class Item:
     location: str = "nowhere"
     here: str = ""
     here_variants: list = field(default_factory=list)
+    dropped: str = ""           # 'here' text once the player has moved it
     examine: str = ""
     examine_variants: list = field(default_factory=list)
     takeable: bool = True
