@@ -97,6 +97,7 @@ Read the story, then type what you'd like to do in the box at the bottom and pre
 | Do something | `open the door`, `talk to Agnes`, `give the pie to Agnes`, `climb the tree`... try anything! |
 | Repeat your last command | `again` (or `g`) |
 | See your score | `score` |
+| See which ways you can go | `exits` |
 
 You can type several commands at once by separating them with commas: `take the rope, then go north`.
 

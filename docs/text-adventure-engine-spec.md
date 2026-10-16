@@ -441,7 +441,7 @@ Put the table in its own module/data file so it's easy to extend.
 ### 6.3 Turn Resolution Order
 
 1. Empty input → do nothing.
-2. Meta commands (`save`, `load`, `restart`, `score`, `help`, `quit`) — handled immediately, don't count as moves. A meta word only counts as a meta command when typed on its own, so `[action: save the cat]` still works.
+2. Meta commands (`save`, `load`, `restart`, `score`, `exits`, `help`, `quit`) — handled immediately, don't count as moves. A meta word only counts as a meta command when typed on its own, so `[action: save the cat]` still works. `exits` lists the current room's `exits` directions in standard order (`Obvious exits: north, east, down.`); ways opened only by actions aren't listed, and in an unlit dark room it says it's too dark to see the way out.
 3. **Author actions** matching the current room (section 5.6).
 4. Built-in commands: movement, `look`, `examine`, `take`, `take all`, `drop`, `drop all`, `inventory`, `wait`, `again`.
 5. Nothing matched → a friendly, varied message ("I don't know how to do that.", "That doesn't seem to work.", "You can't do that here."). If the verb was understood but the noun wasn't, say so: "You don't see any 'lantren' here."

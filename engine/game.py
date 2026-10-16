@@ -13,8 +13,9 @@ from datetime import datetime
 from .conditions import Condition, compare
 from .model import Action, Item, World
 from .normalizer import Command, Noun, clean, split_commands
-from .vocabulary import (DEFAULT_DARK_TEXT, GENERIC_REPLIES, HELP_TEXT, META_VERBS,
-                         NO_NOUN_REPLIES, NO_RESPONSE_VERBS, NOTHING_HAPPENS_VERBS)
+from .vocabulary import (DEFAULT_DARK_TEXT, DIRECTION_NAMES, GENERIC_REPLIES, HELP_TEXT,
+                         META_VERBS, NO_NOUN_REPLIES, NO_RESPONSE_VERBS,
+                         NOTHING_HAPPENS_VERBS)
 
 SAVE_FORMAT_VERSION = 1
 TRANSCRIPT_LINES = 200
@@ -195,6 +196,8 @@ class Game:
         if verb == "score":
             result.say(f"Your score is {self.score} out of {self.max_score}, "
                        f"in {self.moves} move{'s' if self.moves != 1 else ''}.")
+        elif verb == "exits":
+            result.say(self.exits_text())
         elif verb == "help":
             result.say(HELP_TEXT)
         else:
@@ -288,6 +291,15 @@ class Game:
 
     def is_present(self, item_id: str) -> bool:
         return self.item_locations.get(item_id) in ("inventory", self.current_room)
+
+    def exits_text(self) -> str:
+        """'Obvious exits: north, east, down.' Ways opened by actions aren't listed."""
+        if not self.is_lit():
+            return "It's too dark to see the way out."
+        found = [d for d in DIRECTION_NAMES if d in self.room.exits]
+        if not found:
+            return "There are no obvious exits."
+        return "Obvious exits: " + ", ".join(found) + "."
 
     def is_lit(self) -> bool:
         if not self.room.dark:

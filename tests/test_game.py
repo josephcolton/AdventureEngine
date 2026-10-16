@@ -31,6 +31,14 @@ class MovementAndLookingTests(unittest.TestCase):
         self.assertIn("Damp stone walls", text)
         self.assertIn("A hammer lies", text)
 
+    def test_exits(self):
+        self.assertEqual(run(self.game, "exits"), "Obvious exits: north, east.")
+        self.assertEqual(self.game.moves, 0)       # just information, like score
+        run(self.game, "take key", "e")
+        self.assertEqual(run(self.game, "exits"), "Obvious exits: west.")
+        run(self.game, "w", "n")
+        self.assertEqual(run(self.game, "exits"), "It's too dark to see the way out.")
+
     def test_unknown_word_does_not_count(self):
         self.assertIn("don't know the word", run(self.game, "xyzzy"))
         self.assertEqual(self.game.moves, 0)

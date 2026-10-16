@@ -32,6 +32,7 @@ META_VERBS = {
     "restart": ["restart game", "start over"],
     "quit": ["q", "quit game"],
     "score": [],
+    "exits": [],
     "help": ["commands", "hint", "hints"],
 }
 
@@ -153,7 +154,7 @@ Moving around:  north, south, east, west (or n, s, e, w), up, down, in, out
 Looking:        look (or l), examine the lamp (or x lamp)
 Things:         take the rope, drop the rope, take all, inventory (or i)
 Doing:          open, push, pull, give, talk to, tie, climb, eat ... try anything!
-Other:          wait (or z), again (or g) to repeat, score
+Other:          wait (or z), again (or g) to repeat, score, exits
 
 You can type several commands at once: take the rope, then go north.
 The game also understands: save, load, restart, quit."""
