@@ -31,6 +31,21 @@ class AgnesTests(unittest.TestCase):
         self.assertEqual(self.game.score, 100)
         self.assertIn("You scored 100 out of 100", result.text)
 
+    def test_finding_the_ring(self):
+        g = self.game
+        run(g, "take pie", "e", "give pie to agnes", "n", "tie rope to well", "climb down")
+        self.assertIn("looks like a ring", run(g, "examine the water"))
+        self.assertIn("looks like a ring", run(g, "look in the water"))
+        self.assertIn("simple gold band", run(g, "x something gold"))
+        score = g.score
+        self.assertIn("It's a gold ring!", run(g, "reach into the water"))
+        self.assertEqual(g.item_locations["ring"], "inventory")
+        self.assertEqual(g.score, score + 20)
+        # once it's taken, the water is just water
+        self.assertNotIn("ring", run(g, "examine water"))
+        self.assertIn("nothing else down there", run(g, "feel the water"))
+        self.assertIn("already have", run(g, "take ring"))
+
     def test_alternate_phrasings(self):
         g = self.game
         run(g, "pick up the apple pie", "e")

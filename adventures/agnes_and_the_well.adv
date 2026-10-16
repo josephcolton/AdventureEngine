@@ -85,7 +85,7 @@ examine = Old but sturdy rope, long enough for a deep well.
 
 [item: ring]
 name = gold ring
-aliases = ring, gold ring, wedding ring
+aliases = ring, gold ring, wedding ring, gold, something gold, glint
 location = well_bottom
 here = Something gold glints beneath the water.
 examine = A simple gold band. Inside it is engraved "A. & W. 1951".
@@ -132,12 +132,25 @@ take_fail = That's staying right where it is.
 
 [item: well_stones]
 name = mossy stones
-aliases = stones, moss, water, sky, circle of sky
+aliases = stones, moss, sky, circle of sky
 location = well_bottom
 examine = The stones are green and slippery. High above, the sky is a
     small bright coin of blue.
 take = no
 take_fail = They're part of the well. You'd bring the whole thing down.
+
+# The water is where the ring hides, so looking at it should point the
+# way. "here ring, not has ring" means the ring is lying right here.
+[item: well_water]
+name = water
+aliases = water, pool, puddle, bottom
+location = well_bottom
+examine = The water is cold and clear, and only ankle-deep.
+examine when here ring, not has ring = The water is cold and clear.
+    Something small and round lies on the bottom, catching the light.
+    It looks like a ring!
+take = no
+take_fail = It just runs through your fingers.
 
 # Once the rope is tied, it becomes part of the scenery.
 # These two items share the word "rope" with the coil of rope;
@@ -167,6 +180,7 @@ take_fail = That rope is your only way back up. Best leave it.
 
 [vocabulary]
 tie = knot, fasten, attach, lash
+touch = reach, grope
 
 
 # ----------------------------------------------------------
@@ -249,6 +263,24 @@ also = go up, climb rope, climb out of well, climb out
 where = well_bottom
 message = Hand over hand, you haul yourself back up into the sunshine.
 go = well_yard
+
+
+# ----------------------------------------------------------
+#  FEELING AROUND IN THE WATER
+#  Another way to find the ring: "reach into the water",
+#  "feel in the water", "search the water" (search = examine).
+# ----------------------------------------------------------
+
+[action: touch water]
+where = well_bottom
+if = here ring, not has ring
+message = You reach into the icy water and feel along the bottom. Your
+    fingers close around something small and hard. It's a gold ring!
+move = ring to inventory
+
+[action: touch water]
+where = well_bottom
+message = The water is icy cold. There's nothing else down there.
 
 
 # ----------------------------------------------------------
