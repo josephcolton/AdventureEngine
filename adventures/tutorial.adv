@@ -102,6 +102,15 @@ first = Grandma's kitchen smells of bread and coffee. There's a big
     The screen door leads back out to the porch.
 again = The kitchen. The porch is out; the trapdoor leads down.
 exits = out: porch, down: cellar
+# "hint" is what the player sees if they type "hint" when stuck.
+# Like "when", "hint when" lines change it as the story moves
+# along. The first one that's true is used; otherwise the plain
+# "hint". Nudge the player; don't hand them the answer.
+hint when here lit_lamp = Your lamp is lit. Now the dark is nothing to
+    be afraid of.
+hint when here matches = The lamp would be a lot more useful if you
+    could light it.
+hint = Grandma always kept useful things in the table drawer.
 
 
 # A DARK ROOM. Unless the player carries something with

@@ -46,6 +46,27 @@ class AgnesTests(unittest.TestCase):
         self.assertIn("nothing else down there", run(g, "feel the water"))
         self.assertIn("already have", run(g, "take ring"))
 
+    def test_hints_follow_the_story(self):
+        g = self.game
+        self.assertIn("too good to leave", run(g, "hint"))
+        self.assertEqual(g.moves, 0)               # asking for a hint is free
+        run(g, "take pie")
+        self.assertIn("nothing more to do", run(g, "hints"))
+        run(g, "e")
+        self.assertIn("just the thing", run(g, "hint"))
+        run(g, "give pie to agnes")
+        self.assertIn("talking to her again", run(g, "hint"))
+        run(g, "n")
+        self.assertIn("fastened to something", run(g, "hint"))
+        run(g, "tie rope to well")
+        self.assertIn("climb down", run(g, "hint"))
+        run(g, "climb down")
+        self.assertIn("closer look at the water", run(g, "clue"))
+        run(g, "take ring")
+        self.assertIn("take it to Agnes", run(g, "hint"))
+        run(g, "up")
+        self.assertIn("to the south", run(g, "hint"))
+
     def test_alternate_phrasings(self):
         g = self.game
         run(g, "pick up the apple pie", "e")

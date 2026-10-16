@@ -126,6 +126,7 @@ class GameScreen(tk.Frame):
         help_ = tk.Menu(menu, tearoff=False)
         help_.add_command(label="How to Play", command=lambda: dialogs.show_text(
             self.app, "How to Play", HELP_TEXT))
+        help_.add_command(label="Get a Hint", command=lambda: self.run_line("hint"))
         help_.add_command(label="About", command=lambda: dialogs.info(
             self.app, "About", ABOUT))
         menu.add_cascade(label="Help", menu=help_)
@@ -245,12 +246,16 @@ class GameScreen(tk.Frame):
         if not self.typed or self.typed[-1] != line:
             self.typed.append(line)
         self.typed_pos = len(self.typed)
+        self.run_line(line)
+        return "break"
+
+    def run_line(self, line: str) -> None:
+        """Play one line as if the player had typed it."""
         result = self.game.command(line)
         self.show(result, echo=line)
         if result.meta:
             {"save": self.save, "load": self.load, "restart": self.restart,
              "quit": self.app.quit}[result.meta]()
-        return "break"
 
     def _recall(self, step: int) -> str:
         if not self.typed:

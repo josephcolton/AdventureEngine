@@ -97,7 +97,7 @@ Shown when the program opens and when the player chooses **Change Adventure**.
 - **Game:** Save (Ctrl+S), Save As…, Load…, Restart, Change Adventure…, Quit.
 - **View:** Larger Text (Ctrl+=), Smaller Text (Ctrl+-), Light/Dark theme. Remember font size and theme between sessions in a small JSON settings file in the user's data folder (section 3).
 - **Author:** Check Adventure, Reload Adventure File (re-reads the `.adv` file and restarts, so the author can edit in Notepad++ and test quickly), Reload and Replay (re-reads the file, restarts, then silently re-runs every command typed so far this game, so the author lands back where she was; if a replayed command now leads to an ending, stop there), Show Flags & State (debug window), Go To Room… (debug teleport).
-- **Help:** How to Play (list of commands), About.
+- **Help:** How to Play (list of commands), Get a Hint (same as typing `hint`), About.
 
 ### 4.4 Saving and Loading
 
@@ -145,13 +145,13 @@ INI-like, but parsed by our own code (do **not** use `configparser`; it can't ha
 - **Long text:** any line that starts with a space or tab continues the previous value. Continuation lines are joined with single spaces (the window does the word-wrapping, so the author can break lines wherever she likes).
 - **Paragraph break inside text:** either a continuation line containing only `~`, **or** one or more blank lines followed by another indented line. (Authors naturally press Enter twice for a new paragraph; that must just work.)
 - **Blank lines** are otherwise ignored. A blank line does not by itself end a text value; the next *unindented* line does.
-- **Comments:** lines whose first non-space character is `#` are ignored. A section header may also be followed by "  # ..." (`[game]   # exactly one`). On a **non-text** setting, a `#` preceded by at least two spaces starts a trailing comment (`max_score = 100   # optional`). On **text** settings a `#` is always shown as written. Text settings are: `title`, `author`, `description`, `intro`, `name`, `first`, `again`, `here`, `examine`, `take_fail`, `dark_text`, `message`, `fail`, `done`, `text`, and the text part of any `when` line (5.3, 5.4).
+- **Comments:** lines whose first non-space character is `#` are ignored. A section header may also be followed by "  # ..." (`[game]   # exactly one`). On a **non-text** setting, a `#` preceded by at least two spaces starts a trailing comment (`max_score = 100   # optional`). On **text** settings a `#` is always shown as written. Text settings are: `title`, `author`, `description`, `intro`, `name`, `first`, `again`, `here`, `examine`, `take_fail`, `dark_text`, `message`, `fail`, `done`, `text`, `hint`, and the text part of any `when` line (5.3, 5.4).
 - **Quotation marks** in text are ordinary characters (for dialogue) and are shown as written.
 - Section types, IDs and keys are **case-insensitive**. IDs may contain letters, numbers and underscores; spaces in IDs are converted to underscores.
 - Lists are comma-separated: `aliases = rope, coil, coil of rope`.
 - **`points` and `score` are interchangeable** as key names everywhere (rooms, items, actions), so the author doesn't have to remember which one goes where.
 - Unknown keys produce a **warning** (likely typo), not an error.
-- A key that may only appear once (anything except `when` lines and `also`) appearing twice in the same section is a **warning**; the last one is used.
+- A key that may only appear once (anything except `when` / `here when` / `examine when` / `hint when` lines and `also`) appearing twice in the same section is a **warning**; the last one is used.
 - The same `[item: x]`, `[room: x]` or `[ending: x]` appearing twice is an error.
 - **Indentation mistakes:** an unindented line that isn't a section header, comment, or `key = value` is an error, and the message must suggest the likely fix: *"Line 42 doesn't look like a setting. If it is part of the text above, start it with a space or tab."*
 
@@ -184,6 +184,8 @@ points = 5                # optional, awarded on first visit
 dark = no                 # optional; see 5.7
 when flag rope_tied = Your rope is knotted around the stump.
 when not flag boat_gone = The rowboat tugs at its rope.
+hint when has rope = That stump looks sturdy enough to tie something to.
+hint = The river is too fast to swim. Perhaps there's another way.
 ```
 
 | Key | Meaning |
@@ -195,6 +197,8 @@ when not flag boat_gone = The rowboat tugs at its rope.
 | `points` | Score for first visit. Optional. The start room's points (if any) are awarded when the game begins. |
 | `dark` | `yes` means the player sees "It is pitch dark." unless a light source is present. Optional. |
 | `when <conditions> = text` | Extra sentence appended to the description whenever the conditions are true. Any number allowed. |
+| `hint` | Shown when the player types `hint` (or uses Help > Get a Hint) in this room. Optional. |
+| `hint when <conditions> = text` | Conditional hint (same `when` reading rules). The first, in file order, whose conditions are true is used; otherwise the plain `hint`. If the room has neither, a generic "There's no hint for this spot..." message is shown. Any number allowed. |
 
 `look` always shows the **full** description (`first`) plus extras; entering a visited room shows `again`.
 
@@ -441,7 +445,7 @@ Put the table in its own module/data file so it's easy to extend.
 ### 6.3 Turn Resolution Order
 
 1. Empty input → do nothing.
-2. Meta commands (`save`, `load`, `restart`, `score`, `exits`, `help`, `quit`) — handled immediately, don't count as moves. A meta word only counts as a meta command when typed on its own, so `[action: save the cat]` still works. `exits` lists the current room's `exits` directions in standard order (`Obvious exits: north, east, down.`); ways opened only by actions aren't listed, and in an unlit dark room it says it's too dark to see the way out.
+2. Meta commands (`save`, `load`, `restart`, `score`, `exits`, `hint`, `help`, `quit`) — handled immediately, don't count as moves. A meta word only counts as a meta command when typed on its own, so `[action: save the cat]` still works. `exits` lists the current room's `exits` directions in standard order (`Obvious exits: north, east, down.`); ways opened only by actions aren't listed, and in an unlit dark room it says it's too dark to see the way out.
 3. **Author actions** matching the current room (section 5.6).
 4. Built-in commands: movement, `look`, `examine`, `take`, `take all`, `drop`, `drop all`, `inventory`, `wait`, `again`.
 5. Nothing matched → a friendly, varied message ("I don't know how to do that.", "That doesn't seem to work.", "You can't do that here."). If the verb was understood but the noun wasn't, say so: "You don't see any 'lantren' here."

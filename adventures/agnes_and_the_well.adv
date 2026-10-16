@@ -25,6 +25,9 @@ intro = It is a warm summer afternoon. You have just finished baking,
 
 # ----------------------------------------------------------
 #  ROOMS
+#  "hint" is what the player sees if they type "hint". The
+#  game uses the first "hint when" that's true, so put the
+#  later parts of the story first and the plain hint last.
 # ----------------------------------------------------------
 
 [room: cottage]
@@ -35,6 +38,9 @@ first = A snug little kitchen with a crooked stove and a scrubbed
     The front door opens east onto the village lane.
 again = Your cozy kitchen. The door leads east to the lane.
 exits = east: lane
+hint when here pie, not has pie = That pie smells far too good to leave sitting
+    on the windowsill.
+hint = There's nothing more to do in here. The lane is just to the east.
 
 [room: lane]
 name = Village Lane
@@ -43,6 +49,11 @@ first = A dusty lane winds between hedgerows. A weathered bench sits
     path leads north toward the old well.
 again = The dusty lane. Your cottage is west; the well is north.
 exits = west: cottage, north: well_yard
+hint when has ring = Agnes would love to see what you found.
+hint when flag fed_agnes = Agnes keeps glancing north, toward the old
+    well. Try talking to her again.
+hint when has pie = Agnes looks hungry, and you have just the thing.
+hint = Agnes looks like she'd enjoy some company. Try talking to her.
 
 [room: well_yard]
 name = The Old Well
@@ -51,6 +62,12 @@ first = Tall grass surrounds a round stone well with a rusty crank.
     to the south.
 again = The old stone well stands in the tall grass. The lane is south.
 exits = south: lane
+hint when has ring = Agnes is waiting in the lane, to the south.
+hint when flag rope_tied = The rope is tied. Now you can climb down.
+hint when has rope = That rope looks long enough to reach the bottom,
+    if only it were fastened to something.
+hint = The well is far too deep to climb down without a rope. Maybe
+    someone in the village has one.
 when flag rope_tied = A rope hangs from the crank, down into the darkness.
 
 [room: well_bottom]
@@ -61,6 +78,10 @@ first = You lower yourself hand over hand until your feet splash into
 again = Cold water swirls around your ankles. The rope leads back up.
 exits = up: well_yard
 points = 10
+hint when has ring = You found it! Climb back up and take it to Agnes.
+hint when here ring = Something gold glints beneath the water. Take a
+    closer look at the water.
+hint = There's nothing more down here. The rope leads back up.
 when flag rope_tied = The rope dangles beside you, leading up to the light.
 
 

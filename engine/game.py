@@ -198,6 +198,8 @@ class Game:
                        f"in {self.moves} move{'s' if self.moves != 1 else ''}.")
         elif verb == "exits":
             result.say(self.exits_text())
+        elif verb == "hint":
+            result.say(self.hint_text())
         elif verb == "help":
             result.say(HELP_TEXT)
         else:
@@ -300,6 +302,12 @@ class Game:
         if not found:
             return "There are no obvious exits."
         return "Obvious exits: " + ", ".join(found) + "."
+
+    def hint_text(self) -> str:
+        """The room's hint: the first 'hint when' that's true, else the plain 'hint'."""
+        hint = self._pick(self.room.hint_variants, self.room.hint)
+        return hint or ("There's no hint for this spot. Try examining the things "
+                        "around you, and type exits to see which ways you can go.")
 
     def is_lit(self) -> bool:
         if not self.room.dark:

@@ -39,6 +39,10 @@ class MovementAndLookingTests(unittest.TestCase):
         run(self.game, "w", "n")
         self.assertEqual(run(self.game, "exits"), "It's too dark to see the way out.")
 
+    def test_hint_without_one_written(self):
+        self.assertIn("no hint for this spot", run(self.game, "hint"))
+        self.assertEqual(self.game.moves, 0)
+
     def test_unknown_word_does_not_count(self):
         self.assertIn("don't know the word", run(self.game, "xyzzy"))
         self.assertEqual(self.game.moves, 0)

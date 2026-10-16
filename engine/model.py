@@ -35,6 +35,8 @@ class Room:
     dark: bool = False
     dark_text: str = ""
     extras: list = field(default_factory=list)     # [Variant]
+    hint: str = ""                                 # for when the player types "hint"
+    hint_variants: list = field(default_factory=list)
     line: int = 0
 
 
@@ -134,7 +136,7 @@ class World:
 def all_conditions(world: World):
     """Every (condition, line) anywhere in the adventure, for the validator."""
     for room in world.rooms.values():
-        for conds, _, line in room.extras:
+        for conds, _, line in room.extras + room.hint_variants:
             for c in conds:
                 yield c, line
     for item in world.items.values():

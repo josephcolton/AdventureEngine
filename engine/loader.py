@@ -23,14 +23,14 @@ from .vocabulary import DIRECTIONS, KNOWN_VERBS
 ALLOWED_KEYS = {
     "game": {"title", "author", "description", "start", "intro", "max_score"},
     "room": {"name", "first", "again", "exits", "points", "score", "dark",
-             "dark_text", "when"},
+             "dark_text", "when", "hint", "hint when"},
     "item": {"name", "aliases", "location", "here", "examine", "take", "take_fail",
              "points", "score", "light", "here when", "examine when"},
     "action": {"id", "also", "where", "if", "fail", "message", "go", "score",
                "points", "set", "clear", "move", "end", "once", "done"},
     "ending": {"type", "when", "text"},
 }
-REPEATABLE_KEYS = {"when", "here when", "examine when", "also"}
+REPEATABLE_KEYS = {"when", "here when", "examine when", "hint when", "also"}
 
 _ID = re.compile(r"^[a-z0-9_]+$")
 _YES = {"yes", "y", "true", "on"}
@@ -218,7 +218,8 @@ class _Builder:
             first=s.value("first"), again=s.value("again"),
             points=self._int(s, "points", "score"),
             dark=self._bool(s, "dark", False), dark_text=s.value("dark_text"),
-            extras=self._variants(s, "when"), line=s.line,
+            extras=self._variants(s, "when"), hint=s.value("hint"),
+            hint_variants=self._variants(s, "hint when"), line=s.line,
         )
         if not room.first:
             self.report.warning(s.line, f"Room '{ident}' has no description. "

@@ -33,7 +33,8 @@ META_VERBS = {
     "quit": ["q", "quit game"],
     "score": [],
     "exits": [],
-    "help": ["commands", "hint", "hints"],
+    "hint": ["hints", "clue", "clues"],
+    "help": ["commands"],
 }
 
 # canonical verb -> other ways to say it
@@ -155,6 +156,7 @@ Looking:        look (or l), examine the lamp (or x lamp)
 Things:         take the rope, drop the rope, take all, inventory (or i)
 Doing:          open, push, pull, give, talk to, tie, climb, eat ... try anything!
 Other:          wait (or z), again (or g) to repeat, score, exits
+Stuck?          hint
 
 You can type several commands at once: take the rope, then go north.
 The game also understands: save, load, restart, quit."""

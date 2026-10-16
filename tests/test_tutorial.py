@@ -65,6 +65,15 @@ class TutorialTests(unittest.TestCase):
         self.assertEqual(g.inventory()[0].id, "lit_lamp")
         self.assertIn("flame burns", run(g, "examine lamp"))       # shared alias
 
+    def test_kitchen_hint_changes(self):
+        g = self.game
+        run(g, "in")
+        self.assertIn("table drawer", run(g, "hint"))
+        run(g, "open drawer")
+        self.assertIn("if you could light it", run(g, "hint"))
+        run(g, "take matches", "take lamp", "light lamp")
+        self.assertIn("lamp is lit", run(g, "hint"))
+
     def test_drawer_once_without_done_falls_through(self):
         g = self.game
         run(g, "in")

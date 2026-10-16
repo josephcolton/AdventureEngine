@@ -21,16 +21,16 @@ SECTIONS_WITH_ID = ("room", "item", "action", "ending")
 # character; on every other setting, "  # ..." starts a trailing comment.
 TEXT_KEYS = {
     "title", "author", "description", "intro", "name", "first", "again", "here",
-    "examine", "take_fail", "dark_text", "message", "fail", "done", "text",
+    "examine", "take_fail", "dark_text", "message", "fail", "done", "text", "hint",
 }
 
 # Keys written as "<key> when <conditions> = <text>".
-CONDITIONAL_KEYS = ("when", "here when", "examine when")
+CONDITIONAL_KEYS = ("when", "here when", "examine when", "hint when")
 
 _HEADER = re.compile(r"^\[\s*([A-Za-z_]+)\s*(?::\s*(.*?))?\s*\]$")
 _SETTING = re.compile(r"^([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)$")
 _VOCAB_SETTING = re.compile(r"^([^=]+?)\s*=\s*(.*)$")
-_CONDITIONAL = re.compile(r"^(?:(here|examine)\s+)?when\s+(?![\s=])(.*)$", re.IGNORECASE)
+_CONDITIONAL = re.compile(r"^(?:(here|examine|hint)\s+)?when\s+(?![\s=])(.*)$", re.IGNORECASE)
 _TRAILING_COMMENT = re.compile(r"(?:[ \t]{2,}|\t)#")
 
 PARAGRAPH = "\n\n"

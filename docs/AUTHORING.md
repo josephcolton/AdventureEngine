@@ -24,15 +24,16 @@ Take it slowly. Try each example as you go. You can't break anything, and the ga
 12. [Things That Only Happen Once](#things-that-only-happen-once)
 13. [Characters and Conversations](#characters-and-conversations)
 14. [Descriptions That Change](#descriptions-that-change)
-15. [Dark Rooms and Lamps](#dark-rooms-and-lamps)
-16. [Points and Scoring](#points-and-scoring)
-17. [Winning and Losing](#winning-and-losing)
-18. [Teaching the Game New Words](#teaching-the-game-new-words)
-19. [Testing Your Adventure](#testing-your-adventure)
-20. [Helpful Tips](#helpful-tips)
-21. [When Something Goes Wrong](#when-something-goes-wrong)
-22. [Cheat Sheet](#cheat-sheet)
-23. [Colors in Notepad++](#colors-in-notepad)
+15. [Hints for Stuck Players](#hints-for-stuck-players)
+16. [Dark Rooms and Lamps](#dark-rooms-and-lamps)
+17. [Points and Scoring](#points-and-scoring)
+18. [Winning and Losing](#winning-and-losing)
+19. [Teaching the Game New Words](#teaching-the-game-new-words)
+20. [Testing Your Adventure](#testing-your-adventure)
+21. [Helpful Tips](#helpful-tips)
+22. [When Something Goes Wrong](#when-something-goes-wrong)
+23. [Cheat Sheet](#cheat-sheet)
+24. [Colors in Notepad++](#colors-in-notepad)
 
 ---
 
@@ -620,6 +621,40 @@ take = no
 
 ---
 
+## Hints for Stuck Players
+
+When players get stuck, they can type `hint` (or choose **Help > Get a Hint**). Give a room a `hint` line to say what they'll see:
+
+```ini
+[room: well_yard]
+name = The Old Well
+first = Tall grass surrounds a round stone well.
+exits = south: lane
+hint = The well is far too deep to climb down without a rope.
+```
+
+The right hint usually depends on how far the player has got. Use `hint when` lines, which work just like `when` lines. The game uses the **first** one whose condition is true, and the plain `hint` if none are. So put the later parts of the story **first**:
+
+```ini
+[room: well_yard]
+name = The Old Well
+first = Tall grass surrounds a round stone well.
+exits = south: lane
+hint when flag rope_tied = The rope is tied. Now you can climb down.
+hint when has rope = That rope looks long enough, if only it were
+    fastened to something.
+hint = The well is far too deep to climb down without a rope.
+```
+
+A few tips:
+
+- **Nudge, don't tell.** "That rope looks long enough, if only it were fastened to something" is more fun than "Type tie rope to well."
+- Asking for a hint is free. It doesn't use up a move.
+- If a room has no hint, the player is told to examine things and type `exits`.
+- `here pie` is true when the pie is in the room **or** in the player's hands. To mean "lying right here", write `here pie, not has pie`.
+
+---
+
 ## Dark Rooms and Lamps
 
 Put `dark = yes` in a room to make it dark:
@@ -889,6 +924,8 @@ Room A leads to room B, but B doesn't lead back. That's fine if you meant it (a 
 | `dark` | `dark = yes` |
 | `dark_text` | `dark_text = You can't see a thing.` |
 | `when` | `when flag rope_tied = A rope hangs here.` |
+| `hint` | `hint = Maybe someone in the village has a rope.` |
+| `hint when` | `hint when has rope = Try tying the rope to something.` |
 
 ### `[item: ...]`
 

@@ -98,6 +98,7 @@ Read the story, then type what you'd like to do in the box at the bottom and pre
 | Repeat your last command | `again` (or `g`) |
 | See your score | `score` |
 | See which ways you can go | `exits` |
+| Get a nudge when you're stuck | `hint` (or **Help > Get a Hint**) |
 
 You can type several commands at once by separating them with commas: `take the rope, then go north`.
 
