@@ -1,0 +1,280 @@
+# ==========================================================
+#  Agnes and the Well
+#  A tiny four-room example adventure.
+#
+#  How to win (spoilers!):
+#    1. Take the pie in the cottage.
+#    2. Go east to the lane and talk to Agnes.
+#    3. Give her the pie. She gives you a rope.
+#    4. Go north to the well yard and tie the rope to the well.
+#    5. Climb down the well (the special command).
+#    6. Take the ring, climb back up, and give it to Agnes.
+#
+#  Score: 100 points total.
+# ==========================================================
+
+[game]
+title = Agnes and the Well
+author = Example Developer
+description = A short, gentle adventure about a hungry neighbor
+    and something lost long ago.
+start = cottage
+intro = It is a warm summer afternoon. You have just finished baking,
+    and the whole cottage smells of apples and cinnamon.
+
+
+# ----------------------------------------------------------
+#  ROOMS
+# ----------------------------------------------------------
+
+[room: cottage]
+name = Your Cottage
+first = A snug little kitchen with a crooked stove and a scrubbed
+    wooden table. The window is propped open to let the breeze in.
+    ~
+    The front door opens east onto the village lane.
+again = Your cozy kitchen. The door leads east to the lane.
+exits = east: lane
+
+[room: lane]
+name = Village Lane
+first = A dusty lane winds between hedgerows. A weathered bench sits
+    under an old oak tree. Your cottage is to the west, and a narrow
+    path leads north toward the old well.
+again = The dusty lane. Your cottage is west; the well is north.
+exits = west: cottage, north: well_yard
+
+[room: well_yard]
+name = The Old Well
+first = Tall grass surrounds a round stone well with a rusty crank.
+    Cool air drifts up from somewhere far below. The lane is back
+    to the south.
+again = The old stone well stands in the tall grass. The lane is south.
+exits = south: lane
+when flag rope_tied = A rope hangs from the crank, down into the darkness.
+
+[room: well_bottom]
+name = Bottom of the Well
+first = You lower yourself hand over hand until your feet splash into
+    ankle-deep water. A circle of sky glows far above you. The stones
+    are slick with moss.
+again = Cold water swirls around your ankles. The rope leads back up.
+exits = up: well_yard
+points = 10
+when flag rope_tied = The rope dangles beside you, leading up to the light.
+
+
+# ----------------------------------------------------------
+#  ITEMS
+# ----------------------------------------------------------
+
+[item: pie]
+name = apple pie
+aliases = pie, apple pie
+location = cottage
+here = A golden apple pie is cooling on the windowsill.
+examine = The crust is flaky and still warm. It smells wonderful.
+points = 5
+
+[item: rope]
+name = coil of rope
+aliases = rope, coil, coil of rope
+location = nowhere
+here = A coil of rope lies here.
+examine = Old but sturdy rope, long enough for a deep well.
+
+[item: ring]
+name = gold ring
+aliases = ring, gold ring, wedding ring
+location = well_bottom
+here = Something gold glints beneath the water.
+examine = A simple gold band. Inside it is engraved "A. & W. 1951".
+points = 20
+
+# Scenery: things you can look at but not carry.
+# Agnes is "scenery" too. That is how characters work for now.
+
+[item: agnes]
+name = Agnes
+aliases = agnes, old agnes, woman, old woman, neighbor, lady
+location = lane
+here = Old Agnes sits on the bench, fanning herself with her hat.
+examine = Agnes has lived in the village longer than anyone. Her
+    eyes are kind, but she looks a little sad today.
+examine when flag fed_agnes = Agnes looks much happier with a bit
+    of pie in her, though her eyes keep drifting north, toward the well.
+take = no
+take_fail = Agnes would not appreciate that one bit.
+
+[item: well]
+name = well
+aliases = well, old well, stone well, crank
+location = well_yard
+examine = The stones are cold and mossy. You can't see the bottom.
+take = no
+take_fail = It's a well. It isn't going anywhere.
+
+[item: table]
+name = table
+aliases = table, stove, window, windowsill
+location = cottage
+examine = Everything in your kitchen is old, but well loved.
+take = no
+take_fail = Better leave the furniture where it is.
+
+[item: bench]
+name = bench
+aliases = bench, oak, tree, oak tree
+location = lane
+examine = The bench is worn smooth from years of sitting.
+take = no
+take_fail = That's staying right where it is.
+
+[item: well_stones]
+name = mossy stones
+aliases = stones, moss, water, sky, circle of sky
+location = well_bottom
+examine = The stones are green and slippery. High above, the sky is a
+    small bright coin of blue.
+take = no
+take_fail = They're part of the well. You'd bring the whole thing down.
+
+# Once the rope is tied, it becomes part of the scenery.
+# These two items share the word "rope" with the coil of rope;
+# the game picks whichever one is actually in front of you.
+
+[item: tied_rope]
+name = rope
+aliases = rope, tied rope
+location = nowhere
+examine = The rope is knotted tightly around the crank and hangs
+    straight down into the dark.
+take = no
+take_fail = It's tied to the crank, and you may need it to get back up.
+
+[item: dangling_rope]
+name = rope
+aliases = rope, dangling rope
+location = well_bottom
+examine = The rope hangs beside you, leading up to the light.
+take = no
+take_fail = That rope is your only way back up. Best leave it.
+
+
+# ----------------------------------------------------------
+#  VOCABULARY (extra words just for this adventure)
+# ----------------------------------------------------------
+
+[vocabulary]
+tie = knot, fasten, attach, lash
+
+
+# ----------------------------------------------------------
+#  TALKING TO AGNES
+#  The engine tries these in order and uses the first one
+#  whose "if" is true, so the conversation changes as the
+#  story moves along.
+# ----------------------------------------------------------
+
+[action: talk to agnes]
+where = lane
+if = flag ring_returned
+message = Agnes just smiles and turns the ring on her finger.
+
+[action: talk to agnes]
+where = lane
+if = flag fed_agnes
+message = "That well swallowed my wedding ring, oh, fifty years ago,"
+    Agnes says. "Walter tried to fish it out, bless him, but never
+    could. Maybe that rope will do you more good than it did him."
+
+[action: talk to agnes]
+where = lane
+message = "Hello, dear," Agnes says. "I've been sitting here so long
+    my stomach is grumbling. I don't suppose you have anything to eat?
+    Something smells like apple pie..."
+
+
+# ----------------------------------------------------------
+#  GIVING AGNES THE PIE  (you get the rope back)
+# ----------------------------------------------------------
+
+[action: give pie to agnes]
+where = lane
+if = has pie
+fail = You don't have anything she'd want.
+message = Agnes's face lights up. "Oh, my favorite!" She takes a bite
+    and sighs happily. "Here, take this. It was my Walter's. I've no
+    use for it now, but you might." She hands you a coil of rope.
+move = pie to nowhere, rope to inventory
+set = fed_agnes
+score = 15
+once = yes
+
+
+# ----------------------------------------------------------
+#  USING THE ROPE AT THE WELL
+# ----------------------------------------------------------
+
+[action: tie rope to well]
+where = well_yard
+if = has rope
+fail = You don't have anything to tie.
+message = You knot the rope firmly around the well's crank and drop
+    the rest down the shaft. It uncoils with a faint splash.
+move = rope to nowhere, tied_rope to well_yard
+set = rope_tied
+score = 10
+once = yes
+done = The rope is already tied securely.
+
+
+# ----------------------------------------------------------
+#  THE SPECIAL COMMAND: CLIMBING DOWN THE WELL
+#  "also" lists other ways a player might say it.
+# ----------------------------------------------------------
+
+[action: climb down the well]
+also = go down, enter well, descend well, go down well,
+    climb rope, climb down rope
+where = well_yard
+if = flag rope_tied
+fail = It's far too deep to climb down without a rope.
+message = You grip the rope and climb down into the cool darkness...
+go = well_bottom
+
+# And the way back up. "go up" also covers "climb up", "u" and "up".
+[action: climb up the rope]
+also = go up, climb rope, climb out of well, climb out
+where = well_bottom
+message = Hand over hand, you haul yourself back up into the sunshine.
+go = well_yard
+
+
+# ----------------------------------------------------------
+#  RETURNING THE RING  (this wins the game)
+# ----------------------------------------------------------
+
+[action: give ring to agnes]
+where = lane
+if = has ring
+fail = You don't have anything she'd want right now.
+message = Agnes stares at the ring in your palm. Her hands tremble as
+    she slips it onto her finger. It still fits.
+move = ring to nowhere
+set = ring_returned
+score = 40
+end = ring_home
+
+
+# ----------------------------------------------------------
+#  ENDINGS
+# ----------------------------------------------------------
+
+[ending: ring_home]
+type = win
+text = "Fifty years," Agnes whispers, wiping her eyes. "Walter would be
+    so glad." She squeezes your hand. "Now, dear, is there any more
+    of that pie?"
+    ~
+    *** You have won ***

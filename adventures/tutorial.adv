@@ -1,0 +1,695 @@
+# ==============================================================
+#  GRANDMA'S LOCKET  --  the tutorial adventure
+#
+#  This little adventure shows off every feature of the engine.
+#  Read it from top to bottom like a lesson: each new idea is
+#  explained in a comment just before it is used. Copy any part
+#  of it into your own adventure and change the words.
+#
+#  Lines that start with # (like these) are comments. The game
+#  ignores them, so use them for notes to yourself.
+#
+#  MAP
+#
+#                       Front Porch ---in/out--- Kitchen
+#                            |                      |
+#                          north/south            up/down
+#                            |                      |
+#     Old Orchard          Garden ---east/west--- Shed   Root Cellar (dark)
+#    (up: Apple Tree)  ---southwest/northeast---  |
+#                            |
+#                        southeast/northwest
+#                            |
+#                      Muddy Riverbank
+#                            |
+#                         up/down (needs a rope)
+#                            |
+#                         Sandbar
+#
+#  HOW TO WIN (spoilers!) -- 100 points:
+#     in, open drawer, take matches, take lamp,
+#     light lamp with matches, down, take key, up, out,
+#     south, east, take rope, take trowel, west,
+#     southwest, climb tree, eat apple, down, northeast,
+#     southeast, tie rope to willow, climb down rope, dig,
+#     take locket, climb rope, northwest, north
+#
+#  HOW TO LOSE: jump in the river.
+# ==============================================================
+
+
+# --------------------------------------------------------------
+#  THE GAME SECTION
+#  Every adventure has exactly one [game] section.
+#  "start" is the id of the room where the player begins.
+#
+#  Long text can go over several lines: just start each extra
+#  line with a space or a tab. To begin a new paragraph, leave
+#  a blank line (or put a line with only ~ on it).
+# --------------------------------------------------------------
+
+[game]
+title = Grandma's Locket
+author = Example Developer
+description = The tutorial adventure. Help Grandma find the silver
+    locket she lost down by the river.
+start = porch
+intro = It's a lazy summer afternoon at Grandma's farm. She has been
+    quiet all week, and this morning you found out why: she lost her
+    silver locket somewhere down by the river.
+
+    You've decided to find it for her.
+
+# max_score is optional. If you leave it out, the game adds up all
+# the points for you. If you put it in and it's wrong, "Check
+# Adventure" will tell you.
+max_score = 100
+
+
+# --------------------------------------------------------------
+#  ROOMS
+#
+#  name   = shown in the status bar and as a heading
+#  first  = the full description, used the first time (and by LOOK)
+#  again  = a shorter description for later visits (optional)
+#  exits  = direction: room id, separated by commas
+#
+#  The directions are north, south, east, west, northeast,
+#  northwest, southeast, southwest, up, down, in and out.
+#  Players can type short forms like n, se, u.
+# --------------------------------------------------------------
+
+[room: porch]
+name = Front Porch
+first = A wide wooden porch wraps around the old farmhouse. A screen
+    door leads in to the kitchen, and the steps go down south into the
+    garden.
+again = The front porch. The kitchen is in; the garden is south.
+exits = in: kitchen, south: garden
+# A "when" line adds a sentence to the description whenever its
+# condition is true. "moves" counts how many turns have passed;
+# "score" is the player's score.
+when moves >= 50 = The afternoon shadows are growing long.
+when score >= 50 = From inside the house comes the whistle of the kettle.
+
+
+[room: kitchen]
+name = Farmhouse Kitchen
+first = Grandma's kitchen smells of bread and coffee. There's a big
+    pine table with a drawer, and an open trapdoor in the floor leads
+    down into darkness.
+    ~
+    The screen door leads back out to the porch.
+again = The kitchen. The porch is out; the trapdoor leads down.
+exits = out: porch, down: cellar
+
+
+# A DARK ROOM. Unless the player carries something with
+# "light = yes" (or one is lying in the room), they only see the
+# dark_text. dark_text is optional; there is a spooky default.
+# "points" are awarded the first time the player enters.
+
+[room: cellar]
+name = Root Cellar
+first = Shelves of jars and baskets of last year's apples line the
+    cool stone walls. Wooden steps lead back up.
+exits = up: kitchen
+dark = yes
+dark_text = It is pitch dark down here. You can smell damp earth and old
+    apples. You might be eaten by something.
+points = 5
+
+
+[room: garden]
+name = Vegetable Garden
+first = Rows of beans and tomatoes stretch out in the sun. A little
+    garden shed stands to the east. A path wanders southwest into the
+    orchard, and another runs southeast toward the sound of rushing
+    water. The porch is back north.
+again = The vegetable garden. Porch north, shed east, orchard
+    southwest, river southeast.
+exits = north: porch, east: shed, southwest: orchard, southeast: riverbank
+# "flag" conditions check something an action has switched on.
+when flag shed_unlocked = The shed door stands open.
+
+
+[room: shed]
+name = Garden Shed
+first = A cramped little shed, full of cobwebs and the smell of
+    potting soil. The door is back to the west.
+exits = west: garden
+points = 5
+
+
+[room: orchard]
+name = Old Orchard
+first = Gnarled apple trees lean together here. One big old tree has
+    low branches that would be easy to climb. The garden is back to the
+    northeast.
+again = The old orchard. One tree has easy branches to climb.
+exits = northeast: garden, up: treetop
+
+
+[room: treetop]
+name = Up the Apple Tree
+first = You perch on a wide branch with leaves all around you. From up
+    here you can see the whole farm, and the brown, swollen river
+    beyond the garden.
+again = You're up in the apple tree.
+exits = down: orchard
+points = 5
+# "not" turns any condition around.
+when not flag locket_found = Far off, down on a sandbar in the river,
+    a magpie is pecking at something that glints in the sun.
+
+
+[room: riverbank]
+name = Muddy Riverbank
+first = The river roars past, brown and swollen with three days of
+    rain. An old willow tree clings to the edge of the bank with its
+    roots. Below, a steep, muddy drop leads down to a sandbar. The
+    garden path climbs back to the northwest.
+again = The muddy riverbank by the old willow. The garden is northwest.
+exits = northwest: garden, down: sandbar
+when flag rope_tied = A rope is tied to the willow, its end trailing
+    down the bank to the sandbar.
+
+
+[room: sandbar]
+name = Sandbar
+first = A narrow strip of sand and sticky mud, with the river rushing
+    past on both sides. Reeds rattle in the wind.
+again = The little sandbar in the middle of the river.
+exits = up: riverbank
+points = 10
+when flag rope_tied = The rope hangs down the bank, back up to the willow.
+
+
+# --------------------------------------------------------------
+#  ITEMS
+#
+#  name     = what the game calls it ("You are carrying: oil lamp")
+#  aliases  = other words the player can use for it. The name and
+#             the id always work too. Several words are fine:
+#             "box of matches".
+#  location = a room id, "inventory" (the player starts with it),
+#             or "nowhere" (it isn't in the game yet; an action can
+#             bring it in later).
+#  here     = the sentence shown in the room description
+#  examine  = what the player sees when they look at it
+#  points   = awarded the first time it reaches the player's hands
+# --------------------------------------------------------------
+
+[item: lamp]
+name = oil lamp
+aliases = lamp, lantern, oil lamp, old lamp
+location = kitchen
+here = An old oil lamp hangs on a hook by the door.
+examine = The lamp is full of oil, but it isn't lit.
+
+# This is the SAME lamp after it has been lit. The "light lamp"
+# action (further down) swaps the plain lamp for this one.
+# Two items can share an alias like "lamp" -- the game always
+# picks whichever one is actually in front of the player.
+[item: lit_lamp]
+name = lit oil lamp
+aliases = lamp, lantern, oil lamp, lit lamp
+location = nowhere
+here = A lit oil lamp sits here, glowing warmly.
+examine = The little flame burns steady and bright.
+light = yes
+
+[item: matches]
+name = box of matches
+aliases = matches, match, box of matches, matchbox
+location = nowhere
+here = A box of matches lies here.
+# Conditions can be combined with commas; all must be true.
+here when in kitchen, flag drawer_open = A box of matches sits in the
+    open drawer.
+examine = Big kitchen matches. There are plenty left.
+
+[item: key]
+name = iron key
+aliases = key, iron key, shed key, old key
+location = cellar
+here = An iron key lies on a dusty shelf.
+examine = A heavy old key with a tag that says SHED.
+points = 10
+
+[item: rope]
+name = coil of rope
+aliases = rope, coil, coil of rope, hemp rope
+location = shed
+here = A coil of rope hangs on a nail.
+examine = Twenty feet of sturdy hemp rope.
+
+# Once it's tied to the willow, the rope becomes part of the
+# scenery: you can look at it but not take it.
+[item: tied_rope]
+name = rope
+aliases = rope, tied rope
+location = nowhere
+examine = The rope is knotted firmly around the willow's trunk.
+take = no
+take_fail = You'd better leave it tied, or how will you get back up?
+
+[item: trowel]
+name = garden trowel
+aliases = trowel, garden trowel, spade, little shovel
+location = shed
+here = A garden trowel leans in the corner.
+examine = A sturdy little trowel with a worn wooden handle.
+
+[item: apple]
+name = red apple
+aliases = apple, red apple, ripe apple
+location = treetop
+here = One perfect red apple hangs within reach.
+examine = It's shiny, red and perfectly ripe.
+
+[item: locket]
+name = silver locket
+aliases = locket, silver locket
+location = nowhere
+here = Grandma's silver locket lies in the mud, glinting.
+examine = Grandma's silver locket, engraved with a tiny rose. Inside is
+    a photograph of Grandpa as a young man.
+points = 25
+
+
+# --------------------------------------------------------------
+#  SCENERY AND CHARACTERS
+#
+#  "take = no" means it can't be picked up; take_fail is what the
+#  game says if the player tries. Leave out "here" and the item
+#  won't be listed in the room -- perfect for things that are
+#  already mentioned in the room description.
+#
+#  A character is just scenery that you can talk to (see the
+#  "talk to grandma" actions further down).
+# --------------------------------------------------------------
+
+[item: grandma]
+name = Grandma
+aliases = grandma, grandmother, gran, granny, nana, old woman
+location = porch
+here = Grandma sits in her rocking chair, shelling peas into a bowl.
+# "here when" and "examine when" change an item's text when the
+# condition is true. The first one that matches is used.
+here when visited riverbank = Grandma looks up from her peas. "You've
+    been down by the river, haven't you? Look at those muddy shoes!"
+examine = Grandma's hands are busy, but her eyes keep drifting toward
+    the river. Her neck looks bare without her locket.
+examine when has trowel = Grandma glances at the trowel in your hand and
+    smiles. "Planning some digging, are you?"
+take = no
+take_fail = Grandma laughs. "I'm too old to be carried about, dear!"
+
+[item: chair]
+name = rocking chair
+aliases = chair, rocking chair, rocker, peas, bowl
+location = porch
+examine = The old rocking chair creaks gently back and forth.
+take = no
+take_fail = That's Grandma's chair. Best leave it be.
+
+[item: drawer]
+name = drawer
+aliases = drawer, table drawer, table, pine table, kitchen table
+location = kitchen
+examine = A drawer in the big pine table. It's closed.
+examine when flag drawer_open = A drawer in the big pine table. It's open.
+take = no
+take_fail = It's part of the table.
+
+[item: trapdoor]
+name = trapdoor
+aliases = trapdoor, trap door, hatch
+location = kitchen
+examine = The trapdoor is propped open. Wooden steps lead down.
+take = no
+take_fail = It's hinged to the floor.
+
+[item: jars]
+name = jars
+aliases = jars, jar, shelves, shelf, preserves, baskets, apples
+location = cellar
+examine = Strawberry jam, pickled beets, peach preserves... Grandma has
+    been busy.
+take = no
+take_fail = Grandma would want to know where her preserves went.
+
+[item: shed]
+name = shed
+aliases = shed, garden shed, shed door, door
+location = garden
+examine = A little wooden shed with a sturdy padlock.
+examine when flag shed_unlocked = A little wooden shed. Its door is open.
+take = no
+take_fail = It's a whole shed!
+
+[item: apple_tree]
+name = apple tree
+aliases = tree, apple tree, big tree, branches, branch, trees
+location = orchard
+examine = Its low, wide branches look easy to climb.
+take = no
+take_fail = You give the tree a hug. It doesn't come with you.
+
+[item: willow]
+name = willow tree
+aliases = willow, willow tree, old willow, old willow tree, tree, roots, trunk
+location = riverbank
+examine = The old willow's roots grip the bank like fingers. It looks
+    strong enough to hold almost anything.
+take = no
+take_fail = The willow has stood here for a hundred years. It isn't
+    going anywhere.
+
+[item: river]
+name = river
+aliases = river, water, current, swollen river
+location = riverbank
+examine = The water is brown, fast and full of branches. Swimming in
+    it would be a very bad idea.
+take = no
+take_fail = You can't carry a river.
+
+[item: mud]
+name = mud
+aliases = mud, sand, reeds, sandbar
+location = sandbar
+examine = Thick, sticky mud, full of stones. Something might be buried
+    in it.
+examine when flag locket_found = The mud is all churned up where you dug.
+take = no
+take_fail = It squishes through your fingers.
+
+
+# --------------------------------------------------------------
+#  VOCABULARY
+#
+#  Extra words just for this adventure. "light = strike" means
+#  the word "strike" works anywhere "light" does, so "strike a
+#  match" means the same as "light a match". It works for things
+#  too: "pendant" and "necklace" now mean the locket.
+#
+#  You can also teach the game a brand-new verb: "whistle" isn't
+#  a word the game knows, so we list it here (with "toot" as
+#  another way to say it) and give it an action below.
+# --------------------------------------------------------------
+
+[vocabulary]
+light = strike
+locket = pendant, necklace
+whistle = toot
+
+
+# --------------------------------------------------------------
+#  ACTIONS
+#
+#  An action makes something special happen when the player types
+#  a certain phrase in a certain room. Write the phrase the way a
+#  player might say it; the game understands lots of other ways of
+#  saying the same thing ("jump in the river" = "wade into river"
+#  = "enter river").
+#
+#  where   = which room(s) it works in, or "anywhere"
+#  if      = conditions that must all be true
+#  fail    = what to say if they aren't
+#  message = what to say when it works
+#  then any of: go, move, set, clear, score, end
+#  once    = yes means it only works once; "done" is what the game
+#            says if the player tries it again.
+#
+#  Actions are checked BEFORE the game's normal commands, so they
+#  can change how ordinary commands like "go east" behave.
+# --------------------------------------------------------------
+
+
+# --- Talking to Grandma ---------------------------------------
+# The game tries actions with the same phrase in order, from top
+# to bottom, and uses the first one whose "if" is true. So put
+# the most specific ones first and the plain one last.
+#
+# Conditions you can use:
+#   has ITEM        the player is carrying it
+#   here ITEM       it's in this room or being carried
+#   flag NAME       an action has set that flag
+#   in ROOM         the player is in that room
+#   visited ROOM    the player has been there
+#   score >= 50     (also >, <, <=, =)
+#   moves < 100     (same)
+#   not ...         turns any of these around
+
+[action: talk to grandma]
+where = porch
+if = visited riverbank, not visited sandbar
+message = "That bank is terribly steep," Grandma says. "Your grandpa
+    used to tie a rope to the old willow and climb down to the sandbar
+    to fish."
+
+[action: talk to grandma]
+where = porch
+if = has trowel
+message = "Oh, you found my trowel! That's handy for digging, that is."
+
+# "id" gives an action a name for save files. It's optional -- the
+# game makes one up if you leave it out.
+[action: talk to grandma]
+id = grandma_hello
+where = porch
+message = "I lost my locket down by the river last week," Grandma
+    sighs. "Your grandpa gave it to me. If you go poking about, take a
+    light down to the cellar, dear -- the old shed key is down there
+    somewhere."
+
+
+# --- The kitchen drawer: "once" without "done" ----------------
+# The first time the player opens the drawer, the matches appear
+# ("move = matches to here" puts them in the current room) and
+# the player gets 5 points. Because this action has once = yes
+# but no "done", afterwards the game acts as if it isn't there
+# and tries the next "open drawer" action instead.
+
+[action: open drawer]
+id = find_matches
+also = pull drawer, open table drawer
+where = kitchen
+message = You pull open the drawer. Inside, among the string and
+    rubber bands, is a box of matches.
+move = matches to here
+set = drawer_open
+score = 5
+once = yes
+
+[action: open drawer]
+also = pull drawer, open table drawer
+where = kitchen
+if = not flag drawer_open
+fail = It's already open.
+message = You open the drawer.
+set = drawer_open
+
+# "clear" switches a flag off again.
+[action: close drawer]
+also = push drawer, close table drawer
+where = kitchen
+if = flag drawer_open
+fail = It's already closed.
+message = You slide the drawer shut.
+clear = drawer_open
+
+
+# --- Combining two items: lighting the lamp -------------------
+# "move" can take things away (to nowhere) and bring things in.
+# Here the plain lamp disappears and the lit lamp appears in the
+# player's hands. "also" lists other phrases for the same action.
+
+[action: light lamp with matches]
+also = light lamp, light match, light lamp with match
+where = anywhere
+if = has lamp, has matches
+fail = You'll need to be holding both the lamp and something to
+    light it with.
+message = You strike a match and touch it to the wick. The lamp
+    flickers, then glows warm and bright.
+move = lamp to nowhere, lit_lamp to inventory
+score = 10
+once = yes
+done = The lamp is already burning nicely.
+
+
+# --- A locked door --------------------------------------------
+# These actions change what "go east" does in the garden. The
+# first one lets you straight through once the shed is unlocked.
+# The second unlocks it if you have the key. If neither works,
+# the player sees the second one's "fail" message and stays put.
+#
+# Notice neither action has "go = shed". When a plain movement
+# action like "go east" succeeds without a "go", the player simply
+# walks through the room's normal exit.
+
+[action: go east]
+where = garden
+if = flag shed_unlocked
+
+[action: go east]
+where = garden
+if = has key
+fail = The shed door is locked with a sturdy padlock.
+message = You unlock the padlock with the iron key and swing the
+    shed door open.
+set = shed_unlocked
+
+# Players might also just say "unlock the shed", so we handle that
+# too, the same way. (The 5 points for the shed are on the shed
+# room itself, so the player gets them whichever way they go in.)
+
+[action: unlock shed]
+also = unlock door, unlock padlock, open shed, open door, open padlock,
+    unlock shed with key, open shed with key
+where = garden
+if = flag shed_unlocked
+message = It's already unlocked.
+
+[action: unlock shed]
+also = unlock door, unlock padlock, open shed, open door, open padlock,
+    unlock shed with key, open shed with key
+where = garden
+if = has key
+fail = You'll need a key for that padlock.
+message = You unlock the padlock with the iron key and swing the
+    shed door open.
+set = shed_unlocked
+
+
+# --- Climbing the apple tree ----------------------------------
+# The orchard has an "up" exit, so "up" and "climb up" already
+# work. This action adds "climb tree" and friends, with a nice
+# message. "go" moves the player to another room.
+
+[action: climb tree]
+also = climb apple tree, climb up tree, climb up the apple tree
+where = orchard
+message = You grab a low branch and haul yourself up.
+go = treetop
+
+
+# --- Eating the apple -----------------------------------------
+# "here apple" is true if the apple is in the room OR in the
+# player's hands, so the player can eat it straight off the tree.
+
+[action: eat apple]
+where = anywhere
+if = here apple
+fail = You don't have an apple.
+message = You bite into the apple. It's crisp, sweet and wonderful.
+move = apple to nowhere
+score = 5
+
+
+# --- Tying the rope -------------------------------------------
+# The coil of rope disappears and the tied rope appears at the
+# riverbank. "move" can name a room directly, like this, or use
+# "here" for wherever the player is.
+
+[action: tie rope to willow]
+where = riverbank
+if = has rope
+fail = You don't have anything to tie.
+message = You knot the rope firmly around the willow's trunk and toss
+    the rest down the bank. It lands on the sandbar below.
+move = rope to nowhere, tied_rope to riverbank
+set = rope_tied
+score = 10
+once = yes
+done = The rope is already tied to the willow.
+
+
+# --- Climbing down to the sandbar, and back up ----------------
+# The riverbank has a "down" exit, but this action blocks it
+# until the rope is tied.
+
+[action: go down]
+also = climb down rope, climb down the bank, climb rope, go down rope
+where = riverbank
+if = flag rope_tied
+fail = The bank is far too steep and slippery to climb down without
+    something to hold on to.
+message = Holding tight to the rope, you scramble down the muddy bank.
+go = sandbar
+
+[action: climb rope]
+also = climb up rope, climb up the bank, go up rope
+where = sandbar
+message = Hand over hand, you pull yourself back up the bank.
+go = riverbank
+
+
+# --- Digging for the locket -----------------------------------
+
+[action: dig in the mud]
+also = dig, dig in sand, dig with trowel, dig in mud with trowel,
+    dig mud with trowel
+where = sandbar
+if = here trowel
+fail = The mud is thick and full of stones. You'd need something to
+    dig with.
+message = You dig where the magpie was pecking. The trowel scrapes on
+    something hard... and up comes Grandma's silver locket!
+move = locket to here
+set = locket_found
+score = 10
+once = yes
+done = You've already dug up everything worth finding.
+
+
+# --- A brand-new verb that works anywhere ---------------------
+
+[action: whistle]
+where = anywhere
+message = You whistle a cheerful tune.
+
+
+# --- A dangerous mistake --------------------------------------
+# "where" can list more than one room. "end" triggers an ending
+# (see below). This is the losing ending.
+
+[action: jump in the river]
+also = swim, swim in river, dive in river
+where = riverbank, sandbar
+message = You wade into the river. The current knocks you off your feet
+    at once and sweeps you away downstream...
+end = swept_away
+
+
+# --------------------------------------------------------------
+#  ENDINGS
+#
+#  type = win or lose. At least one "win" ending is required.
+#  "when" (optional) is checked after every turn; as soon as it's
+#  true, the ending happens. An ending without "when" only happens
+#  when an action says "end = ..." (like the river above).
+# --------------------------------------------------------------
+
+[ending: locket_home]
+type = win
+when = has locket, in porch
+text = Grandma stops rocking. She looks at the locket in your hand,
+    then up at you, and her eyes fill with tears.
+
+    "Oh, my dear," she says, fastening it around her neck. "Wherever
+    did you find it?" She pats the seat beside her. "Sit down and tell
+    me everything. I'll put the kettle on."
+    ~
+    *** You have won ***
+
+[ending: swept_away]
+type = lose
+text = The cold water closes over your head. Luckily, a fisherman
+    downstream fishes you out an hour later, soaked and sorry.
+    Grandma's locket will have to wait for another day.
+    ~
+    *** You have lost ***
