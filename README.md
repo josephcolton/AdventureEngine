@@ -84,6 +84,8 @@ python3 adventure.py
 2. Click **Play**.
 3. If you've saved games in this adventure before, you'll see them on the next screen. Pick one and click **Continue** to carry on where you left off, or click **New Adventure** to start from the beginning.
 
+![The saved-game screen](docs/images/saved-games.png)
+
 Read the story, then type what you'd like to do in the box at the bottom and press **Enter**.
 
 | To... | Type something like... |
