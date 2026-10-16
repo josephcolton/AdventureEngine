@@ -154,11 +154,15 @@ def validate(world: "World") -> None:
                                f"start room by any exit or 'go' action.")
 
     # --- one-way exits (informational) ---
+    # A way back can be an exit or an action with 'go' (like climbing down a
+    # rope), so only rooms with neither are mentioned.
     for room in rooms.values():
         for direction, (target, line) in room.exits.items():
             if target in rooms and target != room.id:
                 back = [t for t, _ in rooms[target].exits.values()]
+                back += [a.go for a in world.actions if a.go and a.applies_in(target)]
                 if room.id not in back:
                     report.note(line, f"The '{direction}' exit from '{room.id}' leads to "
-                                f"'{target}', but there is no exit back. That's fine if "
-                                f"you meant it.")
+                                f"'{target}', but there is no way back: '{target}' has no "
+                                f"exit to '{room.id}', and no action there has "
+                                f"'go = {room.id}'. That's fine if you meant it.")

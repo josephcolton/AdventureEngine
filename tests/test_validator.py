@@ -121,7 +121,12 @@ class ValidatorWarningTests(unittest.TestCase):
 
     def test_one_way_exit_is_a_note(self):
         found = messages(GOOD.replace("exits = south: yard", ""), "notes")
-        self.assertTrue(has(found, "no exit back"))
+        self.assertTrue(has(found, "no way back"))
+
+    def test_go_action_counts_as_a_way_back(self):
+        text = GOOD.replace("exits = south: yard", "") + (
+            "\n[action: climb up]\nwhere = cellar\ngo = yard\n")
+        self.assertFalse(has(messages(text, "notes"), "no way back"))
 
     def test_points_and_score_interchangeable(self):
         world = world_from(GOOD.replace("points = 40", "score = 40"))

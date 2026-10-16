@@ -882,9 +882,11 @@ The `max_score` you wrote doesn't match the real total. The simplest fix is to d
 
 In Notepad++, choose **Encoding > Convert to UTF-8**, then save.
 
-### Note: "...but there is no exit back"
+### Note: "...but there is no way back"
 
-Room A leads to room B, but B doesn't lead back. That's fine if you meant it (a slide you can't climb back up, for example). Otherwise add the missing exit.
+Room A leads to room B, but there's no way to get from B back to A: B has no exit to A, and no special command in B has `go = A`. That's fine if you meant it (a slide you can't climb back up, for example). Otherwise add the missing exit or action.
+
+A special command counts as a way back, so a rope you climb down with `go = well_bottom` doesn't need an exit too.
 
 ---
 
